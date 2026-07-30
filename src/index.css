@@ -32,12 +32,12 @@ body {
 /* Direct grid item assignments */
 .side-nav {
   grid-area: side;
-  background-color: #1a0040; /* Dark purple matching image */
+  background-color: #030742; /* Dark purple matching image */
 }
 
 .profile-header {
   grid-area: header;
-  background-color: #fcaebe; /* Pinkish-red matching image */
+  background-color: #40447e; /* Pinkish-red matching image */
 }
 
 .main-content {
