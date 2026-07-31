@@ -41,7 +41,7 @@ const DeleteUser = (({isVisible, setIsDeleteModuleOpen, onUserDelete, user}) => 
             onOk={handleDelete}
             confirmLoading={loading}
             onCancel={() => setIsDeleteModuleOpen(false)}
-            onText="Delete"
+            okText="Delete"
             okButtonProps={{ danger: true }}
             destroyOnClose={true}
             top-centered>
