@@ -13,7 +13,7 @@ const App = () => {
 
   useEffect(() => {
     // For testing purposes, set a default token in localStorage
-    localStorage.setItem('token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzdWFyaW8yIiwic3ViIjoxLCJyb2xlIjoic3VwZXJ1c2VyIiwiaWF0IjoxNzg1NTAzNjY5LCJleHAiOjE3ODU1OTAwNjl9.kbFs4Csaya01qYsOTsPaqZbE2oDXpQ3AuLY0BO9X8iU')
+    localStorage.setItem('token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzdWFyaW8xIiwic3ViIjoxLCJyb2xlIjoic3VwZXJ1c2VyIiwiaWF0IjoxNzg1NzA4MTkxLCJleHAiOjE3ODU3OTQ1OTF9.MZOdp7CXL9iRZ5q1ZU3MhE6DM2ah6o7DPYjSiOoJCqA')
   }, [])
 
   return(

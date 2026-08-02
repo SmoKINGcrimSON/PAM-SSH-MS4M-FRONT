@@ -7,7 +7,6 @@ const HomePage = () => {
   return (
     <div className="main-container">
         <ProfileHeader />
-        <SideNav />
         <MainContent />
     </div>
   )
