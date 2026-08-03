@@ -45,7 +45,7 @@ const CreateServer = ({isVisible, setIsCreateModuleOpen, server, onServerCreated
                 },
                 body: JSON.stringify(bodyData)
             })
-            console.log(`Response from server creation: ${res.status} ${res.statusText}`)
+
             if (!res.ok) throw new Error('Failed to create server')
 
             const createServer = await res.json()

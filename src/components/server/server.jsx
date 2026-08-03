@@ -2,73 +2,32 @@ import React from "react"
 import { Card, List, Button, Dropdown, Space, Tag, Flex } from "antd"
 import { EditOutlined, DeleteOutlined, MoreOutlined, DesktopOutlined } from "@ant-design/icons"
 import { useState } from "react"
-import ShowServer from "./showserver"
-import DeleteServer from "./deleteserver"
+import {useNavigate} from "react-router-dom"
 
 const Server = ({server, onServerDelete}) => {
+
     const [isShowModuleOpen, setIsShowModuleOpen] = useState(false);
     const [isDeleteModuleOpen, setIsDeleteModuleOpen] = useState(false);
-
-    const moreMenuItems = [
-        { 
-            key: '1', 
-            label: 'View Details',
-            onClick: () => setIsShowModuleOpen(true)
-        }
-    ]
+    const [hovered, setHovered] = useState(false);
+    const navigate = useNavigate();
+    const onClickCard = () => {
+        navigate(`/server/${server.server_id}`, {state: {server}})
+    }
 
     return (
-        <List.Item
-            style={{ padding: '18px 12px' }} // Gives rows vertical breathing room
-            actions={[
-                /*
-                <Button key="edit" type="text" icon={<EditOutlined />}>Edit</Button>,
-                <Button key="delete" type="text" danger icon={<DeleteOutlined />} onClick={() => setIsDeleteModuleOpen(true)}>Delete</Button>,
-                <Dropdown key="more" menu={{ items: moreMenuItems }} trigger={['click']}>
-                    <Button type="text" icon={<MoreOutlined />} />
-                </Dropdown>*/
-            ]}>
-
-        {/* Space component places the username and tag side by side with proper gap */}
-            {
-                /*
-            <Space size="large" align="center">
-                <span style={{ fontWeight: 600, fontSize: '15px' }}>{server.hostname}</span>
-                <Tag color={'blue'}>
-                    {server.mine_name.toUpperCase()}
-                </Tag>
-                <Flex direction="column" style={{ gap: '10px' }}>
-                    <span style={{ fontSize: '15px', color: 'gray' }}>IP</span>
-                    <span style={{ fontWeight: 600, fontSize: '15px' }}>{server.ip_address}</span>
-                </Flex>
-                <Flex direction="column" style={{ gap: '10px' }}>
-                    <span style={{ fontSize: '15px', color: 'gray' }}>Port</span>
-                    <span style={{ fontWeight: 600, fontSize: '15px' }}>{server.ssh_port}</span>
-                </Flex>
-                <ShowServer
-                isVisible={isShowModuleOpen}
-                setIsShowModuleOpen={setIsShowModuleOpen}
-                server={server}
-                />
-                <DeleteServer
-                isVisible={isDeleteModuleOpen}
-                setIsDeleteModuleOpen={setIsDeleteModuleOpen}
-                server={server}
-                onServerDelete={onServerDelete}
-                />
-            </Space>*/
-            }
-
             <Card
+
                 style={{
-                    width: 320,
-                    backgroundColor: '#121316',
+                    width: "100%",
                     borderRadius: '12px',
-                    border: '1px solid #1f2023',
-                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
+                    border: hovered ? '1px solid #1677ff' : '1px solid #8c8c8c',
+                    cursor: 'pointer',
                 }}
                 bodyStyle={{ padding: '20px' }}
-                >
+                onMouseEnter={() => setHovered(true)}
+                onMouseLeave={() => setHovered(false)}
+                onClick={onClickCard}
+            >
                 {/* Top Header: Icon and Environment Badge */}
                 <Flex justify="space-between" align="flex-start" style={{ marginBottom: '20px' }}>
                     {/* Square Icon Container */}
@@ -76,12 +35,13 @@ const Server = ({server, onServerDelete}) => {
                         style={{
                             width: '44px',
                             height: '44px',
-                            backgroundColor: '#1e222d',
+                            //backgroundColor: '#1e222d',
                             borderRadius: '10px',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            border: '1px solid #2a2f3d',
+                            //border: '1px solid #6e6f74',
+                            //boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
                         }}
                     >
                         <DesktopOutlined style={{ fontSize: '20px', color: '#5b82f6' }} />
@@ -109,7 +69,7 @@ const Server = ({server, onServerDelete}) => {
                     {/* Hostname — FIXED: Replaced <p> with <span> */}
                     <span
                         style={{
-                            color: '#ffffff',
+                            color: '#8c8c8c',
                             fontSize: '16px',
                             fontWeight: 700,
                             letterSpacing: '0.2px',
@@ -137,11 +97,10 @@ const Server = ({server, onServerDelete}) => {
                             fontSize: '13px',
                         }}
                     >
-                        {server?.user_count} {server?.user_count === 1 ? 'usuario con acceso' : 'usuarios con acceso'}
+                        {`${server?.user?.length ?? 0} usuarios con acceso`}
                     </span>
                 </Flex>
             </Card>
-        </List.Item>
     )
 }
 

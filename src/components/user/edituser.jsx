@@ -44,11 +44,19 @@ const EditUser = ({ isVisible, user, setIsEditModuleOpen, onUserUpdate }) => {
             if (!res.ok) throw new Error('Failed to update user')
             
             const updatedData = await res.json()
+
+            const updatedUser = {
+                ...user,
+                user_type: updatedData.user_type,
+                hash_password: updatedData.hash_password
+            }
             
             // Send updated data back up to Users.jsx state
             if (onUserUpdate) {
-                onUserUpdate(updatedData)
+                onUserUpdate(updatedUser)
             }
+
+            console.log('Updated user data:', updatedUser)
 
             message.success('User updated successfully')
             setNewPassword('')
@@ -71,7 +79,7 @@ const EditUser = ({ isVisible, user, setIsEditModuleOpen, onUserUpdate }) => {
             top-centered
         >
             <Flex style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <Text strong>User Type:</Text>
+                <Text strong>Rol:</Text>
                 <Select value={userType} onChange={(value) => setUserType(value)}>
                     <Select.Option value="superuser">Superuser</Select.Option>
                     <Select.Option value="admin">Admin</Select.Option>

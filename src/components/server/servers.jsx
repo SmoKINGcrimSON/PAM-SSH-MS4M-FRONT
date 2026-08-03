@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import FilterServer from "./filterserver";
 import { Flex } from "antd";
 import CreateServer from "./createserver";
-import ShowServer from "./showserver";
+
 const API_URL = "http://localhost:3000"
 
 const Servers = () => {
@@ -27,19 +27,7 @@ const Servers = () => {
         setServers((prevServers) => [...prevServers, newServer]);
     };
 
-    const handleServerDelete = (deletedServerId) => {
-        setServers((prevServers) => prevServers.filter(server => server.server_id !== deletedServerId));
-    };
-
     useEffect(() => {
-        //const cachedServers = sessionStorage.getItem('servers');
-
-        //if(cachedServers) {
-        //    setServers(JSON.parse(cachedServers));
-        //    setLoading(false);
-        //    return;
-        //}
-
         const token = localStorage.getItem('token')
 
         if (!token) {
@@ -47,23 +35,90 @@ const Servers = () => {
             return
         }
 
-        fetch(`${API_URL}/server`, {
-            method: 'GET',
-            headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                const serverList = Array.isArray(data) ? data : [];
-                setServers(serverList)
-                console.log(`Fetched servers: ${JSON.stringify(data)}`)
-                //sessionStorage.setItem('servers', JSON.stringify(serverList));
-            })
-            .catch((error) => console.error('Error fetching servers:', error))
+        const fetchData = async () => {
+            const servers = [];
 
-            .finally(() => setLoading(false));
+            try{
+                const resUserServer = await fetch(`${API_URL}/user-server`, {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!resUserServer.ok) throw new Error('Failed to fetch user-server');
+                const data = await resUserServer.json();
+                const take_server_id = [];
+                const userServerList = Array.isArray(data) ? data : [];
+
+                userServerList.forEach(userServer => {
+                    const serverId = userServer.server?.server_id || userServer.server_id;
+
+                    if (serverId && !take_server_id.includes(serverId)) {
+                        const server = userServer.server;
+                        const user = userServer.user;
+
+                        const combinedServer = {
+                            ...server,
+                            user: [user], // Initialize with 1 user
+                        };
+
+                        servers.push(combinedServer);
+                        take_server_id.push(serverId);
+                    }
+
+                    if (serverId && take_server_id.includes(serverId)){
+                        const existingServer = servers.find(
+                            s => s.server_id === serverId
+                        );
+
+                        const userExists = existingServer.user.some(
+                            user => user.user_id === userServer.user.user_id
+                        );
+
+                        if (!userExists) {
+                            existingServer.user.push(userServer.user);
+                        }
+                    }
+                })
+
+                console.log(servers);
+            }
+            catch (error){
+                console.error('Error in user-server fetch:', error);
+            }
+
+            try{
+                const resServer = await fetch(`${API_URL}/server`, {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!resServer.ok) throw new Error('Failed to fetch server');
+                const data = await resServer.json();
+
+                const serverList = Array.isArray(data) ? data : [];
+                serverList.forEach(server => {
+                    if (!servers.some(s => s.server_id === server.server_id)){
+                        servers.push(server);
+                    }
+                });
+
+                setServers(servers);
+            }
+            catch (error){
+                console.error('Error in server fetch:', error);
+            }
+            finally {
+                setLoading(false);
+            }
+        }
+
+        fetchData();
     }, []);
 
     return (
@@ -107,17 +162,20 @@ const Servers = () => {
                     dataSource={filteredServers}
                     pagination={{ pageSize: 8 }}
                     renderItem={(server) => (
-                        <Server
-                            key={server.server_id}
-                            server={server}
-                            onServerDelete={handleServerDelete}
-                        />
+                        <List.Item
+                        style={{ padding: '18px 12px' }}
+                        >
+                            <Server
+                                key={server.server_id}
+                                server={server}
+                            />
+                        </List.Item>
                     )}
                 />
                 <CreateServer 
-                isVisible={isCreateModuleOpen}
-                setIsCreateModuleOpen={setIsCreateModuleOpen}
-                onServerCreated={handleServerCreate}
+                    isVisible={isCreateModuleOpen}
+                    setIsCreateModuleOpen={setIsCreateModuleOpen}
+                    onServerCreated={handleServerCreate}
                 />
             </Card>
         </div>

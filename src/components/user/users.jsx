@@ -10,19 +10,8 @@ const Users = () => {
     const [users, setUsers] = useState([])
     const [loading, setLoading] = useState(true)
     const [searchText, setSearchText] = useState('')
-    const [selectedRole, setSelectedRole] = useState('all') // 1. Track active role filter
-
+    const [selectedRole, setSelectedRole] = useState('all')
     const [isCreateModuleOpen, setIsCreateModuleOpen] = useState(false)
-
-    const handleUserUpdate = (updatedUser) => {
-        setUsers((prevUsers) =>
-            prevUsers.map((u) => (u.user_id === updatedUser.user_id ? { ...u, ...updatedUser } : u))
-        )
-    }
-
-    const handleUserDelete = (deleteUserId) => {
-        setUsers((prevUsers) => prevUsers.filter((u) => u.user_id !== deleteUserId))
-    }
 
     const handleUserCreate = (newUser) => {
         setUsers((prevUsers) => [...prevUsers, newUser])
@@ -129,7 +118,7 @@ const Users = () => {
     })
 
     return (
-        <div style={{ maxWidth: '1100px', width: '80%', margin: '40px auto' }}>
+        <div style={{ maxWidth: '1100px', width: '80%', margin: '40px auto'}}>
             <Card
                 title={
                     <div
@@ -138,7 +127,7 @@ const Users = () => {
                             justifyContent: 'space-between',
                             alignItems: 'center',
                             width: '100%',
-                            gap: '16px'
+                            gap: '16px',
                         }}
                     >
                         <span style={{ fontSize: '18px', fontWeight: 600 }}>
@@ -147,7 +136,7 @@ const Users = () => {
 
                         <Flex style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
                             <Input
-                            placeholder="Search users..."
+                            placeholder="search users..."
                             allowClear
                             onChange={(e) => setSearchText(e.target.value)}
                             style={{ maxWidth: '300px' }}
@@ -165,7 +154,12 @@ const Users = () => {
             >
                 <List
                     loading={loading}
-                    grid={{ gutter: 16,
+                    backgroundColor="#fff"
+                    style={{ backgroundColor: '#fff' }}
+                    itemLayout="vertical"
+                    size="large"
+                    grid={{ 
+                        gutter: [24, 24],
                         xs: 1,
                         sm: 2,
                         md: 3,
@@ -177,13 +171,11 @@ const Users = () => {
                     dataSource={filteredUsers}
                     pagination={{ pageSize: 8 }}
                     renderItem={(user) => (
-                        <User
-                            key={user.user_id}
-                            user={user} 
-                            onUserUpdate={handleUserUpdate}
-                            onUserDelete={handleUserDelete}
-                            onUserCreate={handleUserCreate}
-                        />
+                        <List.Item style={{ padding: 1 }}>
+                            <User
+                                user={user}
+                            />
+                        </List.Item>
                     )}
                 />
                 <CreateUser

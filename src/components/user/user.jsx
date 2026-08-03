@@ -2,16 +2,15 @@ import React from 'react'
 import { List, Tag, Button, Dropdown, Space, Card, Flex, Avatar, Typography } from 'antd'
 import { EditOutlined, DeleteOutlined, MoreOutlined } from '@ant-design/icons'
 import { useState, useEffect } from 'react'
-import EditUser from './edituser'
-import DeleteUser from './deleteuser'
-import ShowUser from './showuser'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 const { Title, Text } = Typography
 
 const User = ({ user, onUserUpdate, onUserDelete }) => {
-    const[isEditModuleOpen, setIsEditModuleOpen] = useState(false)
-    const[isDeleteModuleOpen, setIsDeleteModuleOpen] = useState(false)
-    const[isShowMoreMenuOpen, setIsShowMoreMenuOpen] = useState(false)
+    const location = useLocation()
+    const navigate = useNavigate()
+
+    const[hovered, setHovered] = useState(false)
 
     const moreMenuItems = [
         { 
@@ -23,49 +22,16 @@ const User = ({ user, onUserUpdate, onUserDelete }) => {
     ]
 
     return (
-        <List.Item
-            style={{ padding: '18px 12px' }} // Gives rows vertical breathing room
-            actions={[
-                /*
-                <Button  key="edit" type="text" icon={<EditOutlined />} onClick={() => setIsEditModuleOpen(true)}>Edit</Button>,
-                <Button  key="delete" type="text" danger icon={<DeleteOutlined />} onClick={() => setIsDeleteModuleOpen(true)}>Delete</Button>,
-                <Dropdown key="more" menu={{ items: moreMenuItems }} trigger={['click']}>
-                    <Button type="text" icon={<MoreOutlined />} />
-                </Dropdown>*/
-            ]}>
-
-        {/* Space component places the username and tag side by side with proper gap */}
-            {
-                /*
-                <Space size="large" align="center">
-                <span style={{ fontWeight: 600, fontSize: '15px' }}>{user.username}</span>
-                <Tag color={user.user_type === 'admin' ? 'volcano' : 'blue'}>
-                    {user.user_type.toUpperCase()}
-                </Tag>
-                <EditUser 
-                isVisible={isEditModuleOpen} 
-                user={user} 
-                setIsEditModuleOpen={setIsEditModuleOpen}
-                onUserUpdate={onUserUpdate} />
-                <DeleteUser 
-                isVisible={isDeleteModuleOpen} 
-                user={user} 
-                setIsDeleteModuleOpen={setIsDeleteModuleOpen}
-                onUserDelete={onUserDelete} />
-                <ShowUser
-                isVisible={isShowMoreMenuOpen}
-                user={user}
-                setIsShowMoreMenuOpen={setIsShowMoreMenuOpen} />
-            </Space>
-                */
             <Card
                 style={{
-                    width: 300,
-                    backgroundColor: '#12131a',
-                    borderColor: '#262938',
+                    width: '100%',
                     borderRadius: 12,
+                    border: hovered ? '1px solid #1677ff' : '1px solid #8c8c8c',
                 }}
                 styles={{ body: { padding: 16 } }}
+                onMouseEnter={() => setHovered(true)}
+                onMouseLeave={() => setHovered(false)}
+                onClick={() => navigate(`/user/${user.user_id}`, { state: { user } })}
                 >
                 <Flex vertical gap="middle">
                     {/* Header: Avatar + User Info */}
@@ -94,7 +60,6 @@ const User = ({ user, onUserUpdate, onUserDelete }) => {
                     <div>
                         <Tag
                             style={{
-                            backgroundColor: '#1d2330',
                             color: '#91caff',
                             borderColor: 'transparent',
                             borderRadius: 12,
@@ -113,8 +78,6 @@ const User = ({ user, onUserUpdate, onUserDelete }) => {
                     </Text>
                 </Flex>
             </Card>
-            }
-        </List.Item>
     )
 }
 
