@@ -29,41 +29,97 @@ const Users = () => {
     }
 
     useEffect(() => {
-        //const cachedUsers = sessionStorage.getItem('users')
-
-        //if(cachedUsers){
-        //    setUsers(JSON.parse(cachedUsers))
-        //    setLoading(false)
-        //    return
-        //}
-
-        const token = localStorage.getItem('token')
+        const token = localStorage.getItem('token');
 
         if (!token) {
-            console.error('No token found in localStorage')
-            return
+            console.error('No token found in localStorage');
+            return;
         }
 
-        fetch(`${API_URL}/user`, {
-            method: 'GET',
-            headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json'
+        const fetchData = async () => {
+            const users = [];
+
+            // 1. Fetch user-server records
+            try {
+                const resUserServer = await fetch(`${API_URL}/user-server`, {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!resUserServer.ok) throw new Error('Failed to fetch user-server');
+                const data = await resUserServer.json();
+                const take_user_id = [];
+                const userServerList = Array.isArray(data) ? data : [];
+
+                userServerList.forEach(userServer => {
+                    const userId = userServer.user?.user_id || userServer.user_id;
+
+                    if (userId && !take_user_id.includes(userId)) {
+                        const user = userServer.user;
+                        const server = userServer.server;
+
+                        const combinedUser = {
+                            ...user,
+                            server: [server]
+                        };
+
+                        users.push(combinedUser);
+                        take_user_id.push(userId);
+                    }
+
+                    if (userId && take_user_id.includes(userId)) {
+                        const existingUser = users.find(
+                            u => u.user_id === userId
+                        );
+
+                        const serverExists = existingUser.server.some(
+                            server => server.server_id === userServer.server.server_id
+                        );
+
+                        if (!serverExists) {
+                            existingUser.server.push(userServer.server);
+                        }
+                    }
+                });
+
+                console.log(users);
+            } catch (error) {
+                console.error('Error in user-server fetch:', error);
             }
-        })
-            .then((res) => {
-                if (!res.ok) throw new Error('Failed to fetch users')
-                return res.json()
-            })
-            .then((data) => {
-                const userList = Array.isArray(data) ? data : []
-                setUsers(userList)
-                console.log(`Fetched users: ${JSON.stringify(data)}`)
-                //sessionStorage.setItem('users', JSON.stringify(userList))
-            })
-            .catch((error) => console.error('Error:', error))
-            .finally(() => setLoading(false))
-    }, [])
+
+            // 2. Fetch all users and fill in remaining missing ones
+            try {
+                const resUser = await fetch(`${API_URL}/user`, {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!resUser.ok) throw new Error('Failed to fetch users');
+                const data = await resUser.json();
+
+                const userList = Array.isArray(data) ? data : [];
+                userList.forEach(user => {
+                    if (!users.some(u => u.user_id === user.user_id)) {
+                        users.push(user);
+                    }
+                });
+
+                setUsers(users);
+                } catch (error) {
+                    console.error('Error in user fetch:', error);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            fetchData();
+    }, []);
 
     // 2. Combine Search Text + Role Filter cleanly
     const filteredUsers = (users || []).filter((user) => {
@@ -73,7 +129,7 @@ const Users = () => {
     })
 
     return (
-        <div style={{ maxWidth: '1100px', width: '90%', margin: '40px auto' }}>
+        <div style={{ maxWidth: '1100px', width: '80%', margin: '40px auto' }}>
             <Card
                 title={
                     <div
@@ -100,7 +156,7 @@ const Users = () => {
                             {/* 3. Pass role handler to FilterUser */}
                             <FilterUser onSelectRole={(role) => setSelectedRole(role)} />
 
-                            <Button type="primary" onClick={() => setIsCreateModuleOpen(true)}>Create User</Button>
+                            <Button type="primary" onClick={() => setIsCreateModuleOpen(true)}>+ New User</Button>
                         </Flex>
                     </div>
                 }
@@ -109,9 +165,17 @@ const Users = () => {
             >
                 <List
                     loading={loading}
-                    itemLayout="horizontal"
+                    grid={{ gutter: 16,
+                        xs: 1,
+                        sm: 2,
+                        md: 3,
+                        lg: 4,
+                        xl: 4,
+                        xxl: 4, 
+                    }}
+                    //itemLayout="horizontal"
                     dataSource={filteredUsers}
-                    pagination={{ pageSize: 5 }}
+                    pagination={{ pageSize: 8 }}
                     renderItem={(user) => (
                         <User
                             key={user.user_id}

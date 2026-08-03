@@ -67,7 +67,7 @@ const Servers = () => {
     }, []);
 
     return (
-        <div style={{ maxWidth: '1100px', width: '90%', margin: '40px auto' }}>
+        <div style={{ maxWidth: '1200px', width: '90%', margin: '40px auto' }}>
             <Card
                 title={
                     <div
@@ -86,7 +86,7 @@ const Servers = () => {
                         {/* here goes the filter component */}
                         <Flex direction="row" style={{ gap: '20px', alignItems: 'center' }}>
                             <FilterServer handleSearchChange={(value) => setSearchText(value)} />
-                            <Button type="primary" onClick={() => setIsCreateModuleOpen(true)}>Create Server</Button>
+                            <Button type="primary" onClick={() => setIsCreateModuleOpen(true)}>+ New Server</Button>
                         </Flex>
                     </div>
                 }
@@ -95,9 +95,17 @@ const Servers = () => {
             >
                 <List
                     loading={loading}
-                    itemLayout="horizontal"
+                    grid={{ gutter: 16,
+                        xs: 1,
+                        sm: 2,
+                        md: 3,
+                        lg: 4,
+                        xl: 4,
+                        xxl: 4, 
+                    }}
+                    //itemLayout="horizontal"
                     dataSource={filteredServers}
-                    pagination={{ pageSize: 5 }}
+                    pagination={{ pageSize: 8 }}
                     renderItem={(server) => (
                         <Server
                             key={server.server_id}

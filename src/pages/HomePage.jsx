@@ -1,12 +1,11 @@
 import "../index.css"
-import ProfileHeader from "../components/ProfileHeader"
-import SideNav from "../components/SideNav"
 import MainContent from "../components/MainContent"
+import HeaderNav from "../components/sidenav"
 
 const HomePage = () => {
   return (
     <div className="main-container">
-        <ProfileHeader />
+        <HeaderNav />
         <MainContent />
     </div>
   )

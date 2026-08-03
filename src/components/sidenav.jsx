@@ -1,73 +1,90 @@
 import React from 'react';
-import '../index.css';
-import logo from '../assets/ms4m-logo.png';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Menu } from 'antd';
-import { 
-  UserOutlined, 
-  ClusterOutlined, 
-  CodeOutlined 
-} from '@ant-design/icons';
+import { Button, Flex } from 'antd';
 
-const SideNav = () => {
+const HeaderNav = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Define sidebar menu items matching your wireframe layout
-  const items = [
-    {
-      key: '/users',
-      icon: <UserOutlined style={{ fontSize: '18px' }} />,
-      label: 'Users',
-    },
-    {
-      key: '/servers',
-      icon: <ClusterOutlined style={{ fontSize: '18px' }} />,
-      label: 'Servers',
-    },
-    {
-      key: '/ssh-users',
-      icon: <CodeOutlined style={{ fontSize: '18px' }} />,
-      label: 'Ssh users',
-    },
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
+
+  const navItems = [
+    { label: 'Servidores', path: '/servers' },
+    { label: 'Usuarios', path: '/users' },
   ];
 
   return (
-    <aside
-      className="side-nav"
+    <header
       style={{
-        width: '100%',
-        minHeight: '100vh',
-        backgroundColor: '#1b0042', // Dark blue/purple theme from wireframe
+        backgroundColor: '#0d1527', // Dark navy background matching the design
+        height: '60px',
+        padding: '0 32px',
         display: 'flex',
-        flexDirection: 'column',
-        padding: '20px 0',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
       }}
     >
-      {/* Logo Container */}
-      <div style={{ textAlign: 'center', marginBottom: '30px', padding: '0 20px' }}>
-        <img
-          src={logo}
-          alt="Logo"
-          style={{ width: '100%', maxWidth: '160px', height: 'auto' }}
+      {/* Left: Branding */}
+      <Flex align="center" gap={10}>
+        <span
+          style={{
+            width: '8px',
+            height: '8px',
+            borderRadius: '50%',
+            backgroundColor: '#2563eb',
+            display: 'inline-block',
+          }}
         />
-      </div>
+        <span style={{ color: '#ffffff', fontWeight: 600, fontSize: '14px' }}>
+          PAM · MS4M
+        </span>
+      </Flex>
 
-      {/* Ant Design Menu */}
-      <Menu
-        theme="dark"
-        mode="inline"
-        selectedKeys={[location.pathname]}
-        onClick={({ key }) => navigate(key)}
-        items={items}
+      {/* Center: Navigation Links */}
+      <Flex align="center" gap={32} style={{ height: '100%' }}>
+        {navItems.map((item) => {
+          const isActive = location.pathname === item.path;
+          return (
+            <div
+              key={item.path}
+              onClick={() => navigate(item.path)}
+              style={{
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                cursor: 'pointer',
+                color: isActive ? '#3b82f6' : '#94a3b8',
+                fontWeight: isActive ? 600 : 400,
+                fontSize: '14px',
+                borderBottom: isActive ? '2px solid #3b82f6' : '2px solid transparent',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              {item.label}
+            </div>
+          );
+        })}
+      </Flex>
+
+      {/* Right: Logout Button */}
+      <Button
+        onClick={handleLogout}
         style={{
           backgroundColor: 'transparent',
-          borderRight: 0,
-          fontSize: '16px',
+          borderColor: 'rgba(255, 255, 255, 0.15)',
+          color: '#cbd5e1',
+          borderRadius: '6px',
+          fontSize: '13px',
         }}
-      />
-    </aside>
+      >
+        Cerrar sesión
+      </Button>
+    </header>
   );
 };
 
-export default SideNav;
+export default HeaderNav;
