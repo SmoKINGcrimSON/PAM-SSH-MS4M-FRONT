@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Modal, Flex, Input, Typography, Select, Button, message } from 'antd'
+import { fetchWithAuth } from '../../utils/api'
 import '../../index.css'
 const API_URL = "http://localhost:3000" // Default to localhost if not set;
 
@@ -32,7 +33,7 @@ const EditUser = ({ isVisible, user, setIsEditModuleOpen, onUserUpdate }) => {
             }
             else if (userType === user.user_type) throw new Error('No changes made to user type or password.')
 
-            const res = await fetch(`${API_URL}/user/${user?.user_id}`, {
+            const res = await fetchWithAuth(`${API_URL}/user/${user?.user_id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',

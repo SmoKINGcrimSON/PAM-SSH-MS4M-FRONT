@@ -4,6 +4,7 @@ import { Flex, Button, Typography, Card } from "antd";
 import { ArrowLeftOutlined, PlusOutlined } from "@ant-design/icons";
 import AddUser from "./adduser";
 import RemoveUser from "./removeuser";
+import EditServer from "./editserver";
 
 const { Text, Title } = Typography;
 
@@ -15,6 +16,7 @@ const ServerView = () => {
     const [isDeleteModuleOpen, setIsDeleteModuleOpen] = useState(false);
     const [serverIdDelete, setServerIdDelete] = useState(null);
     const [userIdDelete, setUserIdDelete] = useState(null);
+    const [isEditModuleOpen, setIsEditModuleOpen] = useState(false);
 
     const onServerUpdate = (updatedServer) => { /*i can use it for edit user, delete server and add server*/
         setServer(updatedServer);
@@ -192,6 +194,12 @@ const ServerView = () => {
             
             isVisible={isAddModuleOpen}
             setIsAddModuleOpen={setIsAddModuleOpen}
+            onServerUpdate={onServerUpdate}
+        />
+        <EditServer
+            server={server}
+            isVisible={isEditModuleOpen}
+            setIsEditModuleOpen={setIsEditModuleOpen}
             onServerUpdate={onServerUpdate}
         />
     </div>)

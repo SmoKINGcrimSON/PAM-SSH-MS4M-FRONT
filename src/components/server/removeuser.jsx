@@ -1,5 +1,6 @@
 import { Modal, Typography } from 'antd';
 import {useState, useEffect} from 'react';
+import { fetchWithAuth } from '../../utils/api';
 
 const RemoveUser = ({server, isVisible, userId, setIsDeleteModuleOpen, onServerUpdate}) => {
     const [loading, setLoading] = useState(false);
@@ -8,7 +9,7 @@ const RemoveUser = ({server, isVisible, userId, setIsDeleteModuleOpen, onServerU
         try{
             setLoading(true);
 
-            const response = await fetch(`http://localhost:3000/user-server`,
+            const response = await fetchWithAuth(`http://localhost:3000/user-server`,
                 {
                     method: 'DELETE',
                     headers: {

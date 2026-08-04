@@ -3,6 +3,7 @@ import { List, Card, Input, Button, Flex } from 'antd'
 import User from './user'
 import CreateUser from './createuser'
 import FilterUser from './filteruser'
+import { fetchWithAuth } from '../../utils/api'
 
 const API_URL = "http://localhost:3000"
 
@@ -30,7 +31,7 @@ const Users = () => {
 
             // 1. Fetch user-server records
             try {
-                const resUserServer = await fetch(`${API_URL}/user-server`, {
+                const resUserServer = await fetchWithAuth(`${API_URL}/user-server`, {
                     method: 'GET',
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -81,7 +82,7 @@ const Users = () => {
 
             // 2. Fetch all users and fill in remaining missing ones
             try {
-                const resUser = await fetch(`${API_URL}/user`, {
+                const resUser = await fetchWithAuth(`${API_URL}/user`, {
                     method: 'GET',
                     headers: {
                         Authorization: `Bearer ${token}`,

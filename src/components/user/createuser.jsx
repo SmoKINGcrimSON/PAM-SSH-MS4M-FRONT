@@ -1,6 +1,7 @@
 import { Modal, Flex, Typography, Input, Select, Button } from "antd"
 import { useState } from "react"
 import { message } from "antd"
+import { fetchWithAuth } from '../../utils/api'
 const API_URL = "http://localhost:3000" // Default to localhost if not set;
 
 const { Text } = Typography
@@ -32,7 +33,7 @@ const CreateUser = ({isVisible,setIsCreateModuleOpen, user, onUserCreate}) => {
                 hash_password: password
             }
 
-            const res = await fetch(`${API_URL}/user`, {
+            const res = await fetchWithAuth(`${API_URL}/user`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -69,7 +70,12 @@ const CreateUser = ({isVisible,setIsCreateModuleOpen, user, onUserCreate}) => {
     return(<Modal
         title={`Create New User`}
         open={isVisible}
-        onCancel={() => setIsCreateModuleOpen(false)}
+        onCancel={() => {
+            setIsCreateModuleOpen(false)
+            setUsername('')
+            setUserType('')
+            setPassword('')
+        }}
         footer={null}
         destroyOnHidden={true}
         top-centered

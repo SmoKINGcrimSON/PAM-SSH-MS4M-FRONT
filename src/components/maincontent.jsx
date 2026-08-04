@@ -1,4 +1,5 @@
 import '../index.css';
+import ProfileHeader from './profileheader';
 import Users from './user/users';
 import { useState, useEffect } from 'react';
 import {Outlet} from 'react-router-dom'

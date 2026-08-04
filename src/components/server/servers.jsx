@@ -1,6 +1,7 @@
 import Server from "./server";
 import { Card, List, Button } from "antd";
 import { useState, useEffect } from "react";
+import { fetchWithAuth } from "../../utils/api";
 import FilterServer from "./filterserver";
 import { Flex } from "antd";
 import CreateServer from "./createserver";
@@ -39,7 +40,7 @@ const Servers = () => {
             const servers = [];
 
             try{
-                const resUserServer = await fetch(`${API_URL}/user-server`, {
+                const resUserServer = await fetchWithAuth(`${API_URL}/user-server`, {
                     method: 'GET',
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -90,7 +91,7 @@ const Servers = () => {
             }
 
             try{
-                const resServer = await fetch(`${API_URL}/server`, {
+                const resServer = await fetchWithAuth(`${API_URL}/server`, {
                     method: 'GET',
                     headers: {
                         Authorization: `Bearer ${token}`,

@@ -1,5 +1,6 @@
 import { Modal, Flex, Typography, Input, Button, message } from "antd"
 import { useState } from "react"
+import { fetchWithAuth } from '../../utils/api'
 
 const { Text } = Typography
 
@@ -37,7 +38,7 @@ const CreateServer = ({isVisible, setIsCreateModuleOpen, server, onServerCreated
                 mine_name: mineName,
                 server_password: serverPassword
             }
-            const res = await fetch(`http://localhost:3000/server`, {
+            const res = await fetchWithAuth(`http://localhost:3000/server`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -73,7 +74,14 @@ const CreateServer = ({isVisible, setIsCreateModuleOpen, server, onServerCreated
         <Modal 
             title={"Create New Server"}
             open={isVisible}
-            onCancel={() => setIsCreateModuleOpen(false)}
+            onCancel={() => {
+                setIsCreateModuleOpen(false)
+                setHostname('')
+                setIpAddress('')
+                setSshPort('')
+                setMineName('')
+                setServerPassword('')
+            }}
             footer={null}
             destroyOnHidden={true}
             top-centered

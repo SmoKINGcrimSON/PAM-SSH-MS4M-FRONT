@@ -1,6 +1,7 @@
 import { message } from 'antd';
 import {Modal, Spin, Select, Flex, Dropdown, Typography, Divider, Input, Button } from 'antd';
 import { useState, useEffect } from 'react';
+import { fetchWithAuth } from '../../utils/api';
 
 const AddUser = ({server, isVisible, setIsAddModuleOpen, onServerUpdate}) => {
     const [loading, setLoading] = useState(false);
@@ -15,7 +16,7 @@ const AddUser = ({server, isVisible, setIsAddModuleOpen, onServerUpdate}) => {
         console.log(server)
 
         const fetchServers = async () => {
-            const users = await fetch('http://localhost:3000/user', {
+            const users = await fetchWithAuth('http://localhost:3000/user', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -44,7 +45,7 @@ const AddUser = ({server, isVisible, setIsAddModuleOpen, onServerUpdate}) => {
 
             setLoading(true);
 
-            const res = await fetch('http://localhost:3000/user-server',{
+            const res = await fetchWithAuth('http://localhost:3000/user-server',{
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -83,7 +84,12 @@ const AddUser = ({server, isVisible, setIsAddModuleOpen, onServerUpdate}) => {
     return(
         <Modal
             open={isVisible}
-            onCancel={() => setIsAddModuleOpen(false)}
+            onCancel={() => {
+                setIsAddModuleOpen(false)
+                setSelectedUser(null)
+                setSshUsername('')
+                setSshPassword('')
+            }}
             footer={null}
         >
             <Typography.Title level={4} style={{ marginBottom: '-16px', padding: '0px 8px' }}>Assign Server</Typography.Title>
